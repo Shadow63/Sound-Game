@@ -59,3 +59,5 @@ function difficultySelect() {
 
 renderDifficultyButtons();
 difficultySelect();
+
+//test
