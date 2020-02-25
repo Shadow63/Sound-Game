@@ -1,7 +1,9 @@
 import { setupView } from "./render.js";
-import { renderImage, playSound, createSoundArray} from "./rendersound.js";
-const $root = $("#game");
+import { renderImage, playSound, getSoundArray} from "./rendersound.js";
 
+const $root = $("#game");
+let difficulty = "";
+let temp;
 
 function renderDifficultyButtons() {
     let difficulty = `
@@ -26,10 +28,15 @@ function difficultySelect() {
         $(`#easy-button`).remove();
         $(`#medium-button`).remove();
         $(`#hard-button`).remove();
+
+        difficulty = "easy";
+        temp = getSoundArray();
+        console.log("temp", temp);
+
         renderImage();
         setupView();
-        playSound();
-        console.log("test");
+        //playSound();
+       
         e.preventDefault();
       });
 
@@ -37,10 +44,12 @@ function difficultySelect() {
         $(`#easy-button`).remove();
         $(`#medium-button`).remove();
         $(`#hard-button`).remove();
+        difficulty = "medium"; 
         renderImage();
         setupView();
-        playSound();
         
+
+        //playSound();
         console.log("test");
         e.preventDefault();
       });
@@ -49,9 +58,11 @@ function difficultySelect() {
         $(`#easy-button`).remove();
         $(`#medium-button`).remove();
         $(`#hard-button`).remove();
+        difficulty = "hard";
         renderImage();
         setupView();
-        playSound();
+       
+        //playSound();
         console.log("test");
         e.preventDefault();
       });
@@ -60,4 +71,10 @@ function difficultySelect() {
 renderDifficultyButtons();
 difficultySelect();
 
-//test
+export function getDifficulty() {
+    return difficulty;
+}
+
+export function getSArray() {
+    return temp;
+}

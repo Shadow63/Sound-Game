@@ -1,6 +1,7 @@
+import { getDifficulty } from "./difficulty.js"
+
 const $root = $("#game");
-export let soundArray = [];
-window.FOO = soundArray;
+let soundArray = [];
 
 export default class Sound {
     constructor(name) {
@@ -8,20 +9,20 @@ export default class Sound {
       this.played = false;
       this.isPlaying = false;
       this.audio = new Audio('Sounds/' + name + '.mp3');
-      console.log('sound', this);
-      //this.image = new Image('Pictures/' + name + '.jpg');
+      //console.log("played", soundArray);
+      this.image = 'Pictures/' + name + '.jpeg';
     }
 }
-createSoundArray();
 
 
 /** Intent: Shows if the guess is correct or wrong 
 *   Add: Literally everything 
 **/
 export function renderImage() {
+    createSoundArray();
     let hold = `
     <div id="picture">
-        <img src="Pictures/questionMark.jpg" alt="Question Mark"></img> 
+        <img width="500" height="1000" src="Pictures/questionMark.jpg" alt="Question Mark" id="image"></img> 
     </div>
     `;
     
@@ -30,45 +31,66 @@ export function renderImage() {
 
 //Add the sounds in sound folder into an Array of Sounds
 export function createSoundArray() {
-    soundArray.push(new Sound('penguin'));
-    soundArray.push(new Sound('dog'));
-    soundArray.push(new Sound('pig'));
-    console.log('create', soundArray);
+    let d = getDifficulty();
+    switch(d) {
+        case "easy":
+            soundArray.push(new Sound('penguin'));
+            soundArray.push(new Sound('dog'));
+            soundArray.push(new Sound('pig'));
+            
+            break;
+
+        case "medium":
+
+            break;
+
+        case "hard":
+
+            break;
+
+    }
 }
 
 /** Intent: Plays the sounds randomly
  *  Add: Make it play randomly
  **/
-export function playSound() {
+export function playSound(soundArray) {
     let temp = Math.floor(Math.random() * 3);
 
     while(soundArray[temp].played == true) {
         temp = Math.floor(Math.random() * 3)
+        console.log(temp);
     }
     soundArray[temp].audio.play();
     soundArray[temp].played = true;
     soundArray[temp].isPlaying = true;
-    console.log('temp=', temp, soundArray[temp], soundArray[temp].isPlaying);
-
 }
 
 /** 
  * Gets the current sound that is playing
  * 
 */
-export function getIsPlaying() {
-    console.log("is this even being called?", soundArray);
+export function getIsPlaying(soundArray) {
+    console.log("is it playing?", soundArray);
     for (let i = 0; i < soundArray.length; i++) {
-        console.log("does it go into here?");
-        console.log("this should work", i, soundArray[i], soundArray[i].isPlaying);
         if (soundArray[i].isPlaying) {
-            console.log("Why isn't this working?" + soundArray[i]);
             return soundArray[i];
         }
     }
-    console.log("exiting the for loop" + soundArray[0]);
 }
 
-//renderImage();
-//playSound();
+export function getplayedAll(soundArray) {
+    for (let i = 0; i < soundArray.length; i++) {
+        if (!soundArray[i].played) {
+            return false;
+        }
+    }
+    return true;
+}
+
+export function getSoundArray() {
+    console.log("Returning", soundArray);
+    return soundArray;
+}
+
 

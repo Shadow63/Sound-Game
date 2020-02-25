@@ -1,20 +1,23 @@
-import { playSound, getIsPlaying, soundArray} from "./renderSound.js";
+import { playSound, getIsPlaying, getplayedAll, getSoundArray } from "./renderSound.js";
+import { getSArray } from "./difficulty.js";
 const $root = $("#game");
 
 
 var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
 var recognition = new SpeechRecognition();
 let answer = "";
-console.log(soundArray);
-//console.log(playing)
+let temp;
+
 
 export function setupView() {
-    $root.append(renderAnswerBox());
-    
-    $('#start-record-btn').on('click', function(e) {
-        recognition.start();
-        e.preventDefault();
-      });
+  temp = getSArray();
+  playSound(temp);
+  $root.append(renderAnswerBox());
+  
+  $('#start-record-btn').on('click', function(e) {
+      recognition.start();
+      e.preventDefault();
+    });
 }
 
 function renderAnswerBox() {
@@ -46,32 +49,35 @@ function renderAnswerBox() {
       }
       recognition.onresult = function(event) {
         let noteContent = "";
-        // event is a SpeechRecognitionEvent object.
-        // It holds all the lines we have captured so far. 
-        // We only need the current one.
+
         let current = event.resultIndex;
       
-        // Get a transcript of what was said.
         let transcript = event.results[current][0].transcript;
       
-        // Add the current transcript to the contents of our Note.
         noteContent += transcript;
         $('#answer').text(noteContent);
         answer = noteContent;
 
-        let playing = getIsPlaying();
+        let playing = getIsPlaying(temp);
+
         /**
          * Intent: Deals with player guesses
          * 
          */
-        console.log(playing);
+
         if ( answer.toLowerCase() === playing.name + "s" || playing.name === answer.toLowerCase()) {
           console.log("Correct!");
-          
-          $("#picture").append(playing.image);
+
+          document.getElementById("image").src = playing.image;
           playing.audio.pause();
           playing.isPlaying = false;
-          playSound();
+
+          let done = getplayedAll(temp);
+          if (done) {
+            console.log("Congratulations");
+          } else {
+            playSound(temp);
+          }
           
         }
       }
@@ -83,7 +89,4 @@ export function getAnswer() {
   return answer;
 };
 
-// $(function() {
-//     setupView();
-//   });
 
