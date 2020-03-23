@@ -2,6 +2,8 @@ import { getDifficulty } from "./difficulty.js"
 
 const $root = $("#game");
 let soundArray = [];
+let testArray = [];
+//Add countdown + buzzer
 
 export default class Sound {
     constructor(name) {
@@ -14,7 +16,6 @@ export default class Sound {
     }
 }
 
-
 /** Intent: Shows if the guess is correct or wrong 
 *   Add: Literally everything 
 **/
@@ -22,26 +23,46 @@ export function renderImage() {
     createSoundArray();
     let hold = `
     <div id="picture">
-        <img width="500" height="1000" src="Pictures/questionMark.jpg" alt="Question Mark" id="image"></img> 
-    </div>
+        <img width="500" height="500" src="Pictures/questionMark.jpg" alt="Question Mark" id="image"></img> 
+    </div>  
     `;
     
     $root.append(hold);
 }
 
-//Add the sounds in sound folder into an Array of Sounds
+/**
+ * Gets the sounds from JSON file and puts it into one big array called testArray
+ */
+$.getJSON("sounds.json", function(json) {
+    testArray = json.Sounds;
+    for (let i = 0; i < testArray.length; i++) {
+        testArray[i].audio = new Audio('Sounds/' + testArray[i].name + '.mp3');
+        testArray[i].image = 'Pictures/' + testArray[i].name + '.jpeg';
+    }
+    console.log("test1", testArray);
+});
+
+/**
+ * Takes the sounds from the testArray and put them into soundArray depending on difficulty
+ */
 export function createSoundArray() {
+
     let d = getDifficulty();
     switch(d) {
         case "easy":
-            soundArray.push(new Sound('penguin'));
-            soundArray.push(new Sound('dog'));
-            soundArray.push(new Sound('pig'));
-            
+            putIn(5);
+            console.log("test2",testArray);
+            console.log("sound", soundArray)
             break;
 
         case "medium":
-
+            soundArray.push(new Sound('penguin'));
+            soundArray.push(new Sound('dog'));
+            soundArray.push(new Sound('pig'));
+            soundArray.push(new Sound('rooster'));
+            soundArray.push(new Sound('train'));
+            soundArray.push(new Sound('thunder'));
+            soundArray.push(new Sound('water'));
             break;
 
         case "hard":
@@ -55,10 +76,10 @@ export function createSoundArray() {
  *  Add: Make it play randomly
  **/
 export function playSound(soundArray) {
-    let temp = Math.floor(Math.random() * 3);
+    let temp = Math.floor(Math.random() * (soundArray.length));
 
     while(soundArray[temp].played == true) {
-        temp = Math.floor(Math.random() * 3)
+        temp = Math.floor(Math.random() * (soundArray.length))
         console.log(temp);
     }
     soundArray[temp].audio.play();
@@ -68,7 +89,6 @@ export function playSound(soundArray) {
 
 /** 
  * Gets the current sound that is playing
- * 
 */
 export function getIsPlaying(soundArray) {
     console.log("is it playing?", soundArray);
@@ -91,6 +111,17 @@ export function getplayedAll(soundArray) {
 export function getSoundArray() {
     console.log("Returning", soundArray);
     return soundArray;
+}
+
+function putIn(num) {
+    while(soundArray.length != num) {
+        let temp = Math.floor(Math.random() * 5);
+        if (!testArray[temp].isIn) {
+            soundArray.push(testArray[temp]);
+            testArray[temp].isIn = true;
+        }
+        
+    }
 }
 
 

@@ -1,0 +1,65 @@
+{
+    "Sounds" : [
+        {
+            "name" : "penguin",
+            "played" : false,
+            "isPlaying" : false,
+            "isIn" : false,
+            "Hints" : {
+                "1" : "These animals are birds that cannot fly",
+                "2" : "These animals live almost exclusively in the southern hemisphere",
+                "3" : "These animals have flippers that they use to swim" 
+            }
+        },
+        
+        {
+            "name" : "dog",
+            "played" : false,
+            "isPlaying" : false,
+            "isIn" : false,
+            "Hints" : {
+                "1" : "Most people have these animals as pets",
+                "2" : "These animals have unique nose prints",
+                "3" : "The longer the faces of these animals, the longer they live" 
+            }
+        },
+
+        {
+            "name" : "pig",
+            "played" : false,
+            "isPlaying" : false,
+            "isIn" : false,
+            "Hints" : {
+                "1" : "These animals are omnivores, just like humans",
+                "2" : "These animals can run seven minute miles",
+                "3" : "These animals are very intelligent" 
+            }
+        },
+
+        {
+            "name" : "rooster",
+            "played" : false,
+            "isPlaying" : false,
+            "isIn" : false,
+            "Hints" : {
+                "1" : "These animals known for crowing during sunrise",
+                "2" : "This is what you call an adult male chicken",
+                "3" : "These animals can help keep order" 
+            }
+        },
+
+        {
+            "name" : "train",
+            "played" : false,
+            "isPlaying" : false,
+            "isIn" : false,
+            "Hints" : {
+                "1" : "These vehicles travel along trakcs set into the ground",
+                "2" : "These vehicles can be powered by a variety of different energy sources",
+                "3" : "These vehicles can top 300 miles per hour" 
+            }
+        }
+    ]
+
+
+}
