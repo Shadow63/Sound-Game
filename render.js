@@ -1,20 +1,25 @@
-import { playSound, getIsPlaying, getplayedAll, getSoundArray } from "./renderSound.js";
-import { getSArray } from "./difficulty.js";
+import { playSound, getIsPlaying, getplayedAll} from "./renderSound.js";
+import { getSArray, getDifficulty, readOutLoud } from "./difficulty.js";
 const $root = $("#game");
 
 
 var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
 var recognition = new SpeechRecognition();
 let answer = "";
+let d;
 let temp;
 let correctSound = new Audio('Sounds/correctAnswer.mp3');
 let wrondSound = new Audio('Sounds/wrongAnswer.mp3');
 let tries = 0;
 
 
-
+/**
+ * Sets up what is seen on the screen as well as starts the game
+ * Also handles start guess click
+ */
 export async function setupView() {
   temp = getSArray();
+  d = getDifficulty();
   countdown();
   await sleep(4500); 
 
@@ -27,6 +32,9 @@ export async function setupView() {
     });
 }
 
+/**
+ * Renders the answer box where the players guesses goes as well as the start guess button
+ */
 function renderAnswerBox() {
     let hold = `
         <div>
@@ -40,7 +48,9 @@ function renderAnswerBox() {
     return hold;
 }
 
-
+/**
+ * Recognition functions to handles some possible errors
+ */
 recognition.onstart = function() { 
   $('#answer').text('Voice recognition activated. Try speaking into the microphone.');
 }
@@ -56,7 +66,12 @@ recognition.onerror = function(event) {
   };
 }
 
-
+/**
+ * Recognition function where everything is handled, such as
+ * 1) Continues the game when guess is correct
+ * 2) Handle games loss/win
+ * 3) Gets the result from player's guess
+ */
 recognition.onresult = async function(event) {
   let noteContent = "";
 
@@ -69,10 +84,9 @@ recognition.onresult = async function(event) {
   answer = noteContent;
 
   let playing = getIsPlaying(temp);
-
+ 
   /**
-   * Intent: Deals with player guesses
-   * 
+   * This part handles the game correct/incorrect and win/loss
    */
 
   if ( answer.toLowerCase() === playing.name + "s" || playing.name === answer.toLowerCase()) {
@@ -92,7 +106,11 @@ recognition.onresult = async function(event) {
       await sleep(3000);
       countdown();
       await sleep(4500);
-      tries = 0;
+
+      if (d == "easy" || d == "medium") {
+        tries = 0;
+      }
+
       playSound(temp);
     }
     
@@ -100,15 +118,25 @@ recognition.onresult = async function(event) {
     playing.audio.pause();
     console.log('Wrong');
     wrondSound.play();
-    tries++;
+    
     await sleep(1500);
+
+    if (tries === 3) {
+      playing.audio.pause();
+      console.log('You Lose!');
+    }
+
+    if (d === "easy") {
+      readOutLoud("Hint "+ (tries + 1) + ", " + playing.Hints[tries]);
+    } else if (d === "medium") {
+      readOutLoud("Hint " + playing.Hints[0]);
+    }
+
+    tries++;
+    await sleep(5000);
     playing.audio.play();
   }
-
-  if (tries === 3) {
-    playing.audio.pause();
-    console.log('You Lose!');
-  }
+  
 }
 
 /**
@@ -133,6 +161,9 @@ export async function countdown() {
   document.getElementById("image").src = "Pictures/questionMark.jpg";
 }
 
+/**
+ * Gets the answer 
+ */
 export function getAnswer() {
   return answer;
 };
@@ -158,7 +189,7 @@ function frame() {
 }
 
 /**
- * Helper method to make lines of code pause before continuing
+ * Helper function to make lines of code pause before continuing
  */
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));

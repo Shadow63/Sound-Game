@@ -53,13 +53,14 @@ function difficultySelect() {
         $(`#easy-button`).remove();
         $(`#medium-button`).remove();
         $(`#hard-button`).remove();
+
         difficulty = "medium"; 
+        temp = getSoundArray();
+        console.log("temp", temp);
+
         renderImage();
         setupView();
-        
-
         //playSound();
-        console.log("test");
         e.preventDefault();
       });
 
@@ -67,11 +68,13 @@ function difficultySelect() {
         $(`#easy-button`).remove();
         $(`#medium-button`).remove();
         $(`#hard-button`).remove();
+
         difficulty = "hard";
+        temp = getSoundArray();
+        console.log("temp", temp);
         renderImage();
         setupView();
        
-        //playSound();
         console.log("test");
         e.preventDefault();
       });
@@ -127,7 +130,7 @@ $('#game').on('keydown', '#hard-button', function(e) {
     }
 });
 
-function readOutLoud(message) {
+export function readOutLoud(message) {
     var speech = new SpeechSynthesisUtterance();
 
     speech.text = message;

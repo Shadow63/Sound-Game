@@ -3,21 +3,9 @@ import { getDifficulty } from "./difficulty.js"
 const $root = $("#game");
 let soundArray = [];
 let testArray = [];
-//Add countdown + buzzer
 
-export default class Sound {
-    constructor(name) {
-      this.name = name;
-      this.played = false;
-      this.isPlaying = false;
-      this.audio = new Audio('Sounds/' + name + '.mp3');
-      //console.log("played", soundArray);
-      this.image = 'Pictures/' + name + '.jpeg';
-    }
-}
-
-/** Intent: Shows if the guess is correct or wrong 
-*   Add: Literally everything 
+/** 
+*   Renders the image when the player guesses correctly, also used to display the countdown
 **/
 export function renderImage() {
     createSoundArray();
@@ -39,7 +27,6 @@ $.getJSON("sounds.json", function(json) {
         testArray[i].audio = new Audio('Sounds/' + testArray[i].name + '.mp3');
         testArray[i].image = 'Pictures/' + testArray[i].name + '.jpeg';
     }
-    console.log("test1", testArray);
 });
 
 /**
@@ -51,29 +38,20 @@ export function createSoundArray() {
     switch(d) {
         case "easy":
             putIn(5);
-            console.log("test2",testArray);
-            console.log("sound", soundArray)
             break;
 
         case "medium":
-            soundArray.push(new Sound('penguin'));
-            soundArray.push(new Sound('dog'));
-            soundArray.push(new Sound('pig'));
-            soundArray.push(new Sound('rooster'));
-            soundArray.push(new Sound('train'));
-            soundArray.push(new Sound('thunder'));
-            soundArray.push(new Sound('water'));
+            putIn(10);
             break;
 
         case "hard":
-
+            putIn(10);
             break;
-
     }
 }
 
-/** Intent: Plays the sounds randomly
- *  Add: Make it play randomly
+/** 
+ *  Plays a sound randomly
  **/
 export function playSound(soundArray) {
     let temp = Math.floor(Math.random() * (soundArray.length));
@@ -99,6 +77,10 @@ export function getIsPlaying(soundArray) {
     }
 }
 
+/**
+ * Checks to see if all the sounds have been played
+ * Used for win/loss scenario
+ */
 export function getplayedAll(soundArray) {
     for (let i = 0; i < soundArray.length; i++) {
         if (!soundArray[i].played) {
@@ -108,14 +90,20 @@ export function getplayedAll(soundArray) {
     return true;
 }
 
+/**
+ * Gets the soundArray
+ */
 export function getSoundArray() {
     console.log("Returning", soundArray);
     return soundArray;
 }
 
+/**
+ * Puts a specified number of sounds into the soundArray randomly
+ */
 function putIn(num) {
     while(soundArray.length != num) {
-        let temp = Math.floor(Math.random() * 5);
+        let temp = Math.floor(Math.random() * testArray.length);
         if (!testArray[temp].isIn) {
             soundArray.push(testArray[temp]);
             testArray[temp].isIn = true;
