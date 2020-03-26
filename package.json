@@ -1,0 +1,27 @@
+{
+  "name": "sound-game",
+  "version": "1.0.0",
+  "description": "A fun sound guessing game!",
+  "main": "difficulty.js",
+  "dependencies": {
+    "bulma": "^0.8.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shadow63/Sound-Game.git"
+  },
+  "keywords": [
+    "Sound",
+    "Game"
+  ],
+  "author": "Peter Lee",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Shadow63/Sound-Game/issues"
+  },
+  "homepage": "https://github.com/Shadow63/Sound-Game#readme"
+}
