@@ -1,4 +1,4 @@
-import { playSound, getIsPlaying, getplayedAll} from "./renderSound.js";
+import { playSound, getIsPlaying, getplayedAll} from "./rendersound.js";
 import { getSArray, getDifficulty, readOutLoud } from "./difficulty.js";
 const $root = $("#game");
 
@@ -8,9 +8,14 @@ var recognition = new SpeechRecognition();
 let answer = "";
 let d;
 let temp;
-let correctSound = new Audio('Sounds/correctAnswer.mp3');
-let wrondSound = new Audio('Sounds/wrongAnswer.mp3');
 let tries = 0;
+let win = "GAME OVER";
+
+let correctSound = new Audio('assets/Sounds/correctAnswer.mp3');
+let wrondSound = new Audio('assets/Sounds/wrongAnswer.mp3');
+let won = new Audio('assets/Sounds/win.mp3');
+let lose = new Audio('assets/Sounds/lose.mp3');
+
 
 
 /**
@@ -25,6 +30,7 @@ export async function setupView() {
 
   playSound(temp);
   $root.append(renderAnswerBox());
+  document.getElementById("start-record-btn").focus();  
   
   $('#start-record-btn').on('click', function(e) {
       recognition.start();
@@ -37,14 +43,13 @@ export async function setupView() {
  */
 function renderAnswerBox() {
     let hold = `
-        <div>
-            <textarea id='answer'>Your answer</textarea>
+        <div id="ans">
+            <textarea id='answer' style="resize:none">Your answer</textarea>
             <form>
-              <button id='start-record-btn'> Start </button>
+              <button id='start-record-btn'> Guess! </button>
             </form>
         </div>
     `;
-      
     return hold;
 }
 
@@ -55,7 +60,7 @@ recognition.onstart = function() {
   $('#answer').text('Voice recognition activated. Try speaking into the microphone.');
 }
 recognition.onspeechend = function() {
-  $('#answer').text('You were quiet for a while so voice recognition turned itself off.');
+  $('#answer').text('You were too quiet, please try again.');
   recognition.stop();
 }
 recognition.onerror = function(event) {
@@ -63,6 +68,7 @@ recognition.onerror = function(event) {
       $('#answer').text('No speech was detected. Try again.');  
       console.log(event.error);
       console.log(event.message);
+      readOutLoud("No speech was detected. Try again.");
   };
 }
 
@@ -90,7 +96,6 @@ recognition.onresult = async function(event) {
    */
 
   if ( answer.toLowerCase() === playing.name + "s" || playing.name === answer.toLowerCase()) {
-    console.log("Correct!");
 
     document.getElementById("image").src = playing.image;
     playing.audio.pause();
@@ -101,11 +106,22 @@ recognition.onresult = async function(event) {
     let done = getplayedAll(temp);
 
     if (done) {
-      console.log("Congratulations");
+      win = "YOU WIN!";
+      renderGameComplete();
+      won.play();
+      readOutLoud(win);
     } else {
+
       await sleep(3000);
+      $("#ans").remove();
       countdown();
       await sleep(4500);
+      $root.append(renderAnswerBox());
+      document.getElementById("start-record-btn").focus();  
+      $('#start-record-btn').on('click', function(e) {
+          recognition.start();
+          e.preventDefault();
+        });
 
       if (d == "easy" || d == "medium") {
         tries = 0;
@@ -115,26 +131,35 @@ recognition.onresult = async function(event) {
     }
     
   } else {
+
     playing.audio.pause();
-    console.log('Wrong');
     wrondSound.play();
     
     await sleep(1500);
 
-    if (tries === 3) {
-      playing.audio.pause();
-      console.log('You Lose!');
-    }
-
+    
+    
     if (d === "easy") {
       readOutLoud("Hint "+ (tries + 1) + ", " + playing.Hints[tries]);
+      await sleep(5000);
+      playing.audio.play();
+
     } else if (d === "medium") {
       readOutLoud("Hint " + playing.Hints[0]);
+      await sleep(5000);
+      playing.audio.play();
+    } else if (d === "hard") {
+      playing.audio.play();
+    }
+
+    if (tries === 2) {
+      playing.audio.pause();
+      renderGameComplete();
+      lose.play();
+      readOutLoud("Game Over!");
     }
 
     tries++;
-    await sleep(5000);
-    playing.audio.play();
   }
   
 }
@@ -143,22 +168,22 @@ recognition.onresult = async function(event) {
  * Countdown before you can start guessing
  */
 export async function countdown() {
-  document.getElementById("image").src = "Pictures/three.jpeg";
+  document.getElementById("image").src = "assets/Pictures/three.jpeg";
 
   fadeIn();
   await sleep(1500);
 
-  document.getElementById("image").src = "Pictures/two.jpeg";
+  document.getElementById("image").src = "assets/Pictures/two.jpeg";
   fadeIn();
 
   await sleep(1500);
 
-  document.getElementById("image").src = "Pictures/one.png";
+  document.getElementById("image").src = "assets/Pictures/one.png";
   fadeIn();
 
   await sleep(1500);
 
-  document.getElementById("image").src = "Pictures/questionMark.jpg";
+  document.getElementById("image").src = "assets/Pictures/questionMark.jpg";
 }
 
 /**
@@ -193,4 +218,26 @@ function frame() {
  */
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/**
+ * Renders win and lose screens
+ */
+function renderGameComplete() {
+  let victory = `
+    <div id="game-done"> 
+      <div id="setWinLose" class="is-size-1"> ` + win + ` </div>
+
+      <div>
+      <button id="restart-btn" onClick="window.location.reload()" > Restart </button>
+      </div>
+
+    </div>
+  `;
+
+  $("#ans").remove();
+  $("#image").remove();
+  $root.append(victory);
+
+  $("#restart-btn").focus();
 }

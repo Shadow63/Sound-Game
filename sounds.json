@@ -42,7 +42,7 @@
             "isPlaying" : false,
             "isIn" : false,
             "Hints" : {
-                "0" : "These animals known for crowing during sunrise",
+                "0" : "These animals are known for crowing during sunrise",
                 "1" : "This is what you call an adult male chicken",
                 "2" : "These animals can help keep order" 
             }
@@ -133,7 +133,7 @@
         },
 
         {
-            "name" : "plane",
+            "name" : "airplane",
             "played" : false,
             "isPlaying" : false,
             "isIn" : false,

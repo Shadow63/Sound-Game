@@ -36,15 +36,14 @@ function difficultySelect() {
         $(`#easy-button`).remove();
         $(`#medium-button`).remove();
         $(`#hard-button`).remove();
+        $(`#header`).remove();
 
         difficulty = "easy";
         temp = getSoundArray();
-        console.log("temp", temp);
         
         renderImage();
         countdown();
         setupView();
-        //playSound();
        
         e.preventDefault();
       });
@@ -53,14 +52,13 @@ function difficultySelect() {
         $(`#easy-button`).remove();
         $(`#medium-button`).remove();
         $(`#hard-button`).remove();
+        $(`#header`).remove();
 
         difficulty = "medium"; 
         temp = getSoundArray();
-        console.log("temp", temp);
 
         renderImage();
         setupView();
-        //playSound();
         e.preventDefault();
       });
 
@@ -68,14 +66,15 @@ function difficultySelect() {
         $(`#easy-button`).remove();
         $(`#medium-button`).remove();
         $(`#hard-button`).remove();
+        $(`#header`).remove();
 
         difficulty = "hard";
         temp = getSoundArray();
-        console.log("temp", temp);
+
         renderImage();
         setupView();
        
-        console.log("test");
+
         e.preventDefault();
       });
 
@@ -132,11 +131,10 @@ $('#game').on('keydown', '#hard-button', function(e) {
 
 export function readOutLoud(message) {
     var speech = new SpeechSynthesisUtterance();
-
     speech.text = message;
-    speech.volume = 1;
-    speech.rate = 1;
-    speech.pitch = 1;
+    speech.volume = 5;
+    speech.rate = 0.5;
+    speech.pitch = 5;
   
     window.speechSynthesis.speak(speech);
 }
